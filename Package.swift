@@ -1,29 +1,62 @@
-// swift-tools-version:5.1
+// swift-tools-version:5.3
 import PackageDescription
 
 let package = Package(
-  name: "YYKit",
-  platforms: [.iOS(.v9)],
-  products: ([
-    [
-      .library(name: "YYKit", targets: ["YYKit"]),
+    name: "YYKit",
+    platforms: [
+        .iOS(.v9),
     ],
-  ] as [[Product]]).flatMap { $0 },
-  targets: ([
-    [
+    products: [
+        .library(
+            name: "YYKit",
+            targets: ["YYKit"]
+        ),
+    ],
+    dependencies: [
+        // Add any dependencies you need
+    ],
+    targets: [
         .target(
             name: "YYKit",
             dependencies: [],
             path: "YYKit",
             exclude: [
-                           "YYKit/Base",
-                           "YYKit/UIKit",
-                           "YYKit/Cache",
-                           "YYKit/Image",
-                           // 排除其他不需要的文件夹
-                       ],
-            publicHeadersPath: "include"
+                "Base/Foundation/NSObject+YYAddForARC.m",
+                "Base/Foundation/NSThread+YYAdd.m"
+            ],
+            publicHeadersPath: "YYKit",
+            cSettings: [
+                .headerSearchPath("Base"),
+                .headerSearchPath("UIKit"),
+                .headerSearchPath("Cache"),
+                .headerSearchPath("Image"),
+                // Add other header search paths if needed
+            ],
+            swiftSettings: [
+                .define("YY_KIT_SWIFT_PACKAGE")
+            ],
+            linkerSettings: [
+                .linkedLibrary("z"),
+                .linkedLibrary("sqlite3"),
+                // Add other linked libraries if needed
+            ]
+        
         ),
-    ],
-  ] as [[Target]]).flatMap { $0 }
+        .target(
+            name: "YYKitNoArc",
+            dependencies: [],
+            path: "YYKit/Base",
+            sources: [
+                "Foundation/NSObject+YYAddForARC.m",
+                "Foundation/NSThread+YYAdd.m"
+            ],
+            publicHeadersPath: "YYKit",
+            cSettings: [
+                .headerSearchPath(".")
+            ],
+            swiftSettings: [
+                .define("YY_KIT_SWIFT_PACKAGE")
+            ]
+        ),
+    ]
 )
