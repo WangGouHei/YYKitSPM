@@ -6,21 +6,22 @@ let package = Package(
   platforms: [.iOS(.v9)],
   products: ([
     [
-      .library(name: "YYKit", targets: ["YYKitBase","YYKitCache"]),
+      .library(name: "YYKit", targets: ["YYKit"]),
     ],
   ] as [[Product]]).flatMap { $0 },
   targets: ([
     [
         .target(
-            name: "YYKitBase",
+            name: "YYKit",
             dependencies: [],
-            path: "YYKit/Base",
-            publicHeadersPath: "include"
-        ),
-        .target(
-            name: "YYKitCache",
-            dependencies: [],
-            path: "YYKit/Cache",
+            path: "YYKit",
+            exclude: [
+                           "YYKit/Base",
+                           "YYKit/UIKit",
+                           "YYKit/Cache",
+                           "YYKit/Image",
+                           // 排除其他不需要的文件夹
+                       ],
             publicHeadersPath: "include"
         ),
     ],
